@@ -1,0 +1,189 @@
+Benny And The Broken Odometer
+
+One fine day, Benny decided to calculate the number of kilometers that she traveled by her bicycle. Therefore, she bought an odometer and installed it onto her bicycle. But the odometer was broken. It was not able to display the digit 
+3
+. This would precisely mean, that the odometer won't be able to display the numbers having one of their digits as 
+3
+.
+For example, after the number 
+1299
+, the odometer will show 
+1400
+.
+Benny was traveling a lot and now she wants to know the number of kilometers that she has traveled. You will be given only the number that Benny saw on the odometer. Your task is to determine the real distance.
+Input format
+The input consists of several test cases.
+The first line contains one integer 
+T
+ denoting the number of test cases.
+The next 
+T
+ lines contain a single integer 
+N
+ denoting the number that Benny saw on odometer.
+Output format
+For each test case, print the real distance in a single line.
+Constraints
+1
+ ≤ 
+T
+ ≤ 
+10
+5
+0
+ ≤ 
+N
+ < 
+10
+9
+SAMPLE INPUT 
+5
+5
+14
+76
+67
+40
+SAMPLE OUTPUT 
+4
+12
+59
+51
+27
+Explanation
+In the first sample test case, the odometer skipped the number 
+3
+ and displayed 
+4
+ after it. Hence, the numbers were displayed in the order of [
+1
+, 
+2
+, 
+4
+, 
+5
+] accounting to distance of four kilometers travelled.
+In the second sample test case, the sequence in which odometer displayed numbers would be [
+1
+, 
+2
+, 
+4
+, 
+5
+, 
+6
+, 
+7
+,
+8
+, 
+9
+, 
+10
+, 
+11
+, 
+12
+, 
+14
+] and it skipped [
+3
+, 
+13
+]. Thus, a total of 
+12
+ kilometers were travelled.
+===================================EDITORIAL==================================
+The problem boils down to computing the numbers 
+<=N
+ which do not have a digit '3' in their decimal representation.
+The problem is standard digit DP problem. Let us maintain a state as dp[idx][tight][flag]
+ denoting the numbers of length idx less than or equal to given 
+number $N$ having one of their digits as '$3$' or not. Tight can be 1 or 0 depending on whether the current formed number is a prefix of the given number or if it is smaller than it. Flag can be 1 or 0
+ depending on whether there is atleast one of the digit as '3'.
+
+
+
+===========code================
+
+#include<bits/sdc++.h>
+using namespace std
+typedef  long long int  lli;
+int len;
+char s[13];
+int dp[11][2][2];
+lli conv()
+{
+   int ret=0;
+    for(int i=0;i<len;i++)
+         ret=ret*10 +(s[i]-'0');
+   return ret;
+}
+lli solve(int pos,int tight,int state)
+{
+       if(pos==len)
+            return state==1 ?1:0;
+       else if(dp[pos][tight][state]!=-1)
+             return dp[pos][tight][state];
+       else
+	{
+             int ret=0; 
+             if(tight)
+                   {
+                      for(int i=0;i<=s[pos]-'0';i++)
+ 			{
+ 			  int st= i==3?1:0;
+		          if(i==s[pos]-'0')
+                              ret+=solve(pos+1,1,st);
+ 			  else ret+=solve(pos+1,0,st);
+			}
+                        return dp[pos][tight][state]=ret;
+	   else{
+                       int ret=0;
+                      for(int i=0;i<=9;i++)
+ 			{
+ 			  int st= i==3?1:0;
+		  
+ 			   ret+=solve(pos+1,0,st);
+			}
+                        return dp[pos][tight][state]=ret;
+                   }
+         }
+}
+int main()
+{
+    int t;
+     cin>>t;
+     while(t--)
+     {
+      memset(dp,-1,sizeof dp);
+      string ss="";
+    
+            scanf("%s",&s);
+            len=strlen(s);
+         int a=solve(0,1,0);
+         printf("%d\n",conv()-a);
+     }
+}
+			
+  
+                         
+                            
+ 		
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

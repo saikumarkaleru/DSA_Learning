@@ -18,6 +18,11 @@ There are at most O(n*2^n) subproblems, and each one takes linear time to solve.
 The time complexity is much less than O(n!), but still exponential. 
 Space required is also exponential. So this approach is also infeasible even for slightly higher number of vertices.
 
+
+
+
+
+=====================bitmasking====================================
 #include <bits/stdc++.h>
 using namespace std;
 int n=4;
@@ -51,5 +56,52 @@ int main()
     
     cout<<tsp(1,0)<<endl;
 
+    return 0;
+}
+=========================================dp top down=======================
+#include <bits/stdc++.h>
+using namespace std;
+int n=4;
+int dist[5][5]={    {0,20,42,25},
+                    {20,0,30,34},
+                    {42,30,0,10},
+                    {24,34,10,0}
+                };
+vector<vector<int>> dp(1<<n);
+int  VISITED_ALL=(1<<n) -1;
+
+ int tsp(int mask,int pos){    //mask set of cities we have visited so far and not visited ex:001100
+     if(mask==VISITED_ALL){
+         return dist[pos][0];
+     }
+     if(dp[mask][pos]!=-1){
+         return dp[mask][pos];
+     }
+     //try to go to unvisted cities
+     int ans=INT_MAX;
+     for(int city=0;city<n;city++)
+     {
+         if((mask&(1<<city))==0){
+             int newans=dist[pos][city] + tsp(mask | (1<<city),city);
+            ans=min(ans,newans);
+         }
+     }
+        return  dp[mask][pos]=ans;    
+
+ }
+int main()
+{
+ 
+   for(int i=0;i<1<<n;i++)
+   {
+       
+       for(int j=0;j<n;j++){
+           dp[i].push_back(-1);
+       }
+   }
+    
+    cout<<tsp(1,0)<<endl;
+  
+    
     return 0;
 }
